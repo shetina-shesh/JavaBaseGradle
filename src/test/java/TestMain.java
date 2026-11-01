@@ -1,7 +1,5 @@
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -10,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+@Tag("SMOKE")
 public class TestMain {
 
     static int[] randomIntArray() {
@@ -33,45 +32,43 @@ public class TestMain {
         System.out.println("========================");
     }
 
+    @Tag("DEV")
     @ParameterizedTest
     @MethodSource("randomIntArray")
     void isEvenTest(int n) {
         boolean actualResult = Logic.isEven(n);
-        boolean expectedResult = (n % 2 == 0);
+        boolean expectedResult = (n % 2 == 0); //false
 
-        if (expectedResult == actualResult) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Проверка четности для числа: %d", n)
+                .isEqualTo(expectedResult);
     }
 
+    @Tag("DEV")
     @ParameterizedTest
     @MethodSource("randomIntArray")
     void checkAccessTest(int age) {
         String actualResult = Logic.checkAccess(age);
         String expectedResult = (age > 18) ? "Allowed" : "Denied";
 
-        if (expectedResult.equals(actualResult)) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Проверка доступа для возраста: %d", age)
+                .isEqualTo(expectedResult);
     }
 
+    @Tag("DEV")
     @ParameterizedTest
     @MethodSource("randomIntArray")
     void isPositiveTest(int n) {
         boolean actualResult = Logic.isPositive(n);
         boolean expectedResult = (n >= 0) ? true : false;
 
-        if (expectedResult == actualResult) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Проверка знака (+ или -) для числа: %d", n)
+                .isEqualTo(expectedResult);
     }
 
+    @Tag("DEV")
     @ParameterizedTest
     @MethodSource("randomIntArray")
     void getGradeTest(int score) {
@@ -91,14 +88,12 @@ public class TestMain {
             expectedResult = "A";
         }
 
-        if (expectedResult.equals(actualResult)) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Определение оценки для балла: %d", score)
+                .isEqualTo(expectedResult);
     }
 
-    @Test
+    @RepeatedTest(10)
     void blastOffTest() {
         Random random = new Random();
         int start = random.nextInt(1, 101);
@@ -111,14 +106,12 @@ public class TestMain {
         String actualResult = Cycles.blastOff(start);
         String expectedResult = sb.toString();
 
-        if (expectedResult.equals(actualResult)) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Формирование строки отсчета со старта: %d", start)
+                .isEqualTo(expectedResult);
     }
 
-    @Test
+    @RepeatedTest(10)
     void sumToNTest() {
         Random random = new Random();
         int number = random.nextInt(1, 101);
@@ -130,11 +123,9 @@ public class TestMain {
             expectedResult = number * (number + 1) / 2;
         }
 
-        if (expectedResult == actualResult){
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Подсчет суммы чисел от 1 до N для значения N = %d", number)
+                .isEqualTo(expectedResult);
     }
 
     @RepeatedTest(10)
@@ -156,11 +147,9 @@ public class TestMain {
             }
         }
 
-        if (expectedResult == actualResult) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Поиск слова 'Bug' (без учета регистра) в массиве: %s", Arrays.toString(messages))
+                .isEqualTo(expectedResult);
     }
 
     @RepeatedTest(10)
@@ -181,11 +170,9 @@ public class TestMain {
             expectedResult = sb.toString().trim();
         }
 
-        if (expectedResult.equals(actualResult)) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Получение четных чисел в диапазоне от start = %d до end = %d", start, end)
+                .isEqualTo(expectedResult);
     }
 
     @RepeatedTest(10)
@@ -202,11 +189,9 @@ public class TestMain {
             if (i > expectedResult) expectedResult = i;
         }
 
-        if (expectedResult == actualResult){
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Поиск максимального значения в массиве: %s", Arrays.toString(array))
+                .isEqualTo(expectedResult);
     }
 
     @RepeatedTest(10)
@@ -227,14 +212,12 @@ public class TestMain {
             expectedResult[j] = messages[i];
         }
 
-        if (Arrays.equals(expectedResult, actualResult)) {
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Разворот массива строк в обратном порядке. Исходный массив: %s", java.util.Arrays.toString(messages))
+                .isEqualTo(expectedResult);
     }
 
-    @Test
+    @RepeatedTest(10)
     void calcAverageTest() {
         Random random = new Random();
         int length = random.nextInt(3, 6);
@@ -250,14 +233,13 @@ public class TestMain {
 
         int actualResult = Lists.calcAverage(numbers);
         int expectedResult = sum / numbers.size();
-        if (expectedResult == actualResult){
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+
+        Assertions.assertThat(actualResult)
+                .as("Вычисление среднего арифметического для списка чисел: %s", numbers)
+                .isEqualTo(expectedResult);
     }
 
-    @Test
+    @RepeatedTest(10)
     void removeSpecificNameTest() {
         Random random = new Random();
         String[] stringPool = {"One", "Two", "Three", "Four", "Five", "Six", "Seven"};
@@ -275,11 +257,9 @@ public class TestMain {
 
         List<String> actualResult = Lists.removeSpecificName(textList, nameToRemove);
 
-        if (expectedResult.equals(actualResult)){
-            System.out.println("TEST PASSED");
-        } else {
-            System.out.println("TEST FAILED");
-        }
+        Assertions.assertThat(actualResult)
+                .as("Исключение элемента '%s' из списка: %s", nameToRemove, textList)
+                .isEqualTo(expectedResult);
     }
 
 }
